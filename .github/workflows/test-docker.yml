@@ -83,7 +83,7 @@ jobs:
           type=local,src=${{ env.CACHE_PATH }}
         cache-to: type=local,dest=${{ env.CACHE_PATH }}-new
         push: true
-        tags: ${{ env.IMAGE_NAME }}
+        tags: localhost:5000/pliers-doctest:ci
     - 
       name: display images
       run: |
