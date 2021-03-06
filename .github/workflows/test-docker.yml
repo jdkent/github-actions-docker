@@ -5,7 +5,7 @@ on: [pull_request,workflow_dispatch,push]
 
 env:
   IMAGE_NAME: localhost:5000/psycho/pliers:ci
-  REGISTRY_PATH: ${{ github.workspace }}/registry
+  REGISTRY_PATH: /tmp/registry
   CACHE_PATH: /tmp/.buildx-cache
 
 jobs:
