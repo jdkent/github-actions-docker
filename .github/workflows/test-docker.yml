@@ -66,6 +66,7 @@ jobs:
         cache-from: type=local,src=${{ env.CACHE_PATH }}-builder
         cache-to: type=local,dest=${{ env.CACHE_PATH }}-builder-new
         push: true
+        load: true
         tags: localhost:5000/pliers-builder:ci
     - 
       name: Build and export executable
@@ -79,6 +80,7 @@ jobs:
           type=local,src=${{ env.CACHE_PATH }}-builder
         cache-to: type=local,dest=${{ env.CACHE_PATH }}-exec-new
         push: true
+        load: true
         tags: ${{ env.IMAGE_NAME }}
     - 
       name: display images
