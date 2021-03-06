@@ -11,6 +11,13 @@ env:
 jobs:
   build_image:
     runs-on: ubuntu-latest
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+        volumes:
+          - ${{ env.REGISTRY_PATH }}:/var/lib/registry
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -33,10 +40,6 @@ jobs:
       uses: docker/setup-buildx-action@v1
       with:
         driver-opts: network=host
-    - 
-      name: Start Docker registry
-      run: |
-        docker run -d -p 5000:5000 -v ${REGISTRY_PATH}:/var/lib/registry --name registry registry:2
     - 
       name: Rename builder image
       run: |
@@ -81,9 +84,6 @@ jobs:
       name: display images
       run: |
         docker images
-    - 
-      name: Stop Docker registry
-      run: docker stop registry
     -
       name: Upload Docker registry data for testing
       uses: actions/upload-artifact@v2
@@ -117,10 +117,6 @@ jobs:
     - 
       name: Set up QEMU
       uses: docker/setup-qemu-action@v1
-    - 
-      name: Start Docker registry
-      run: |
-        docker run -d -p 5000:5000 -v ${REGISTRY_PATH}:/var/lib/registry --name registry registry:2
     - 
       name: display images
       run: |
@@ -170,7 +166,7 @@ jobs:
         cache-to: type=local,dest=${{ env.CACHE_PATH }}-new
     - 
       name: run doctests
-      run: docker run psycho/pliers-doctest:dev
+      run: docker run localhost:5000/pliers-doctest:dev
     - 
       name: Stop Docker registry
       run: docker stop registry
