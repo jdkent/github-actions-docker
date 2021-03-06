@@ -1,7 +1,7 @@
 
 name: Pull Request Docker Check
 
-on: [pull_request]
+on: [pull_request,workflow_dispatch,push]
 
 env:
   IMAGE_NAME: localhost:5000/psycho/pliers:ci
