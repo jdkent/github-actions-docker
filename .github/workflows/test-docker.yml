@@ -56,7 +56,7 @@ jobs:
         target: executable
         cache-from: |
           type=local,src=${{ env.CACHE_PATH }}-exec
-          type=local,dest=${{ env.CACHE_PATH }}-builder
+          type=local,src=${{ env.CACHE_PATH }}-builder
         cache-to: type=local,dest=${{ env.CACHE_PATH }}-exec-new
         push: true
         tags: ${{ env.IMAGE_NAME }}
