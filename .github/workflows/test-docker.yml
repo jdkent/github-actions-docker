@@ -30,7 +30,9 @@ jobs:
       name: Cache Docker layers
       uses: actions/cache@v2
       with:
-        path: ${{ env.CACHE_PATH }}
+        path: |
+         ${{ env.CACHE_PATH }}-builder
+         ${{ env.CACHE_PATH }}-exec
         key: ${{ runner.os }}-buildx-${{ github.sha }}
         restore-keys: |
           ${{ runner.os }}-buildx-
