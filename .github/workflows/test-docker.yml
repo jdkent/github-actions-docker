@@ -4,7 +4,7 @@ name: Pull Request Docker Check
 on: [pull_request,workflow_dispatch,push]
 
 env:
-  IMAGE_NAME: localhost:5000/psycho/pliers:ci
+  IMAGE_NAME: localhost:5000/pliers:ci
   REGISTRY_PATH: /tmp/registry
   CACHE_PATH: /tmp/.buildx-cache
 
@@ -63,7 +63,7 @@ jobs:
         cache-from: type=local,src=${{ env.CACHE_PATH }}-builder
         cache-to: type=local,dest=${{ env.CACHE_PATH }}-builder-new
         push: true
-        tags: localhost:5000/psycho/pliers-builder:ci
+        tags: localhost:5000/pliers-builder:ci
     - 
       name: Build and export executable
       uses: docker/build-push-action@v2
@@ -160,7 +160,7 @@ jobs:
       with:
         context: .
         file: ./docker/Dockerfile
-        tags: psycho/pliers-doctest:dev
+        tags: localhost:5000/pliers-doctest:dev
         target: doctest
         load: true
         cache-from: |
