@@ -5,8 +5,8 @@ on: [pull_request,workflow_dispatch,push]
 
 env:
   IMAGE_NAME: localhost:5000/pliers:ci
-  REGISTRY_PATH: /tmp/data/registry
-  CACHE_PATH: /tmp/data/.buildx-cache
+  REGISTRY_PATH: /tmp/registry
+  CACHE_PATH: /tmp/.buildx-cache
 
 jobs:
   build_image:
@@ -18,7 +18,9 @@ jobs:
       name: Cache Docker layers
       uses: actions/cache@v2
       with:
-        path: /tmp/data
+        path: |
+          /tmp/registry
+          /tmp/.buildx-cache
         key: ${{ runner.os }}-buildx-${{ github.sha }}
         restore-keys: |
           ${{ runner.os }}-buildx-
@@ -82,17 +84,19 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: docker-registry-data
-        path: /tmp/
+        path: |
+          /tmp/registry
+          /tmp/.buildx-cache
     -
       # Temp fix
       # https://github.com/docker/build-push-action/issues/252
       # https://github.com/moby/buildkit/issues/1896
       name: Move cache
       run: |
-        rm -rf /tmp/data/.buildx-cache-exec
-        rm -rf /tmp/data/.buildx-cache-builder
-        mv /tmp/data/.buildx-cache-exec-new /tmp/data/.buildx-cache-exec
-        mv /tmp/data/.buildx-cache-builder-new /tmp/data/.buildx-cache-builder
+        rm -rf /tmp/.buildx-cache-exec
+        rm -rf /tmp/.buildx-cache-builder
+        mv /tmp/.buildx-cache-exec-new /tmp/.buildx-cache-exec
+        mv /tmp/.buildx-cache-builder-new /tmp/.buildx-cache-builder
 
   doctest:
     runs-on: ubuntu-latest
@@ -106,7 +110,9 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: docker-registry-data
-        path: /tmp/data
+        path: |
+          /tmp/registry
+          /tmp/.buildx-cache
     - 
       name: Start Docker registry
       run: |
