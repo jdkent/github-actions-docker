@@ -91,12 +91,12 @@ jobs:
       # Temp fix
       # https://github.com/docker/build-push-action/issues/252
       # https://github.com/moby/buildkit/issues/1896
-      name: Move cache
-      run: |
-        rm -rf /tmp/.buildx-cache-exec
-        rm -rf /tmp/.buildx-cache-builder
-        mv /tmp/.buildx-cache-exec-new /tmp/.buildx-cache-exec
-        mv /tmp/.buildx-cache-builder-new /tmp/.buildx-cache-builder
+      # name: Move cache
+      # run: |
+      #   rm -rf /tmp/.buildx-cache-exec
+      #   rm -rf /tmp/.buildx-cache-builder
+      #   mv /tmp/.buildx-cache-exec-new /tmp/.buildx-cache-exec
+      #   mv /tmp/.buildx-cache-builder-new /tmp/.buildx-cache-builder
 
   doctest:
     runs-on: ubuntu-latest
@@ -110,9 +110,7 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: docker-registry-data
-        path: |
-          /tmp/registry
-          /tmp/.buildx-cache
+        path: /tmp
     - 
       name: Start Docker registry
       run: |
