@@ -124,6 +124,11 @@ jobs:
       run: |
         docker run -d -p 5000:5000 -v ${REGISTRY_PATH}:/var/lib/registry --name registry registry:2
     - 
+      name: Import Docker images
+      run: |
+        docker pull localhost:5000/pliers-builder:ci
+        docker pull localhost:5000/pliers:ci
+    - 
       name: display images
       run: |
         docker images
