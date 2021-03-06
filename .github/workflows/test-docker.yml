@@ -17,7 +17,7 @@ jobs:
         ports:
           - 5000:5000
         volumes:
-          - ${{ env.REGISTRY_PATH }}:/var/lib/registry
+          - /tmp/registry:/var/lib/registry
     steps:
     - name: Checkout
       uses: actions/checkout@v2
