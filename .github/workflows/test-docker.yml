@@ -1,0 +1,122 @@
+
+name: Pull Request Docker Check
+
+on: [pull_request]
+
+env:
+  IMAGE_NAME: localhost:5000/psycho/pliers:ci
+  REGISTRY_PATH: ${{ github.workspace }}/registry
+  CACHE_PATH: /tmp/.buildx-cache
+
+jobs:
+  build_image:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - 
+      name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    - 
+      name: Start Docker registry
+      run: |
+        docker run -d -p 5000:5000 -v ${REGISTRY_PATH}:/var/lib/registry --name registry registry:2
+    -
+      name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    -
+      name: Cache Docker layers
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.CACHE_PATH }}
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+    - 
+      name: Build and export
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./docker/Dockerfile
+        target: executable
+        cache-from: type=local,src=${{ env.CACHE_PATH }}
+        cache-to: type=local,dest=${{ env.CACHE_PATH }}-new
+        push: true
+        tags: ${{ env.IMAGE_NAME }}
+    - 
+      name: Stop Docker registry
+      run: docker stop registry
+    -
+      name: Upload Docker registry data for testing
+      uses: actions/upload-artifact@v2
+      with:
+        name: docker-registry-data
+        path: ${{ env.REGISTRY_PATH }}/
+    -
+      # Temp fix
+      # https://github.com/docker/build-push-action/issues/252
+      # https://github.com/moby/buildkit/issues/1896
+      name: Move cache
+      run: |
+        rm -rf /tmp/.buildx-cache
+        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+  doctest:
+    runs-on: ubuntu-latest
+    needs: build_image
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+    -
+      name: Download Docker registry data from build job
+      uses: actions/download-artifact@v2
+      with:
+        name: docker-registry-data
+        path: ${{ env.REGISTRY_PATH }}
+    - 
+      name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    - 
+      name: Start Docker registry
+      run: |
+        docker run -d -p 5000:5000 -v ${REGISTRY_PATH}:/var/lib/registry --name registry registry:2
+    -
+      name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    -
+      name: Cache Docker layers
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.CACHE_PATH }}
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+    - 
+      name: Build and export
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./docker/Dockerfile
+        tags: psycho/pliers-doctest:dev
+        target: doctest
+        load: true
+        cache-from: |
+          type=local,src=${{ env.CACHE_PATH }}
+          ${{ env.IMAGE_NAME }}
+        cache-to: type=local,dest=${{ env.CACHE_PATH }}-new
+    - 
+      name: run doctests
+      run: docker run psycho/pliers-doctest:dev
+    - 
+      name: Stop Docker registry
+      run: docker stop registry
+    -
+      # Temp fix
+      # https://github.com/docker/build-push-action/issues/252
+      # https://github.com/moby/buildkit/issues/1896
+      name: Move cache
+      run: |
+        rm -rf ${{ env.CACHE_PATH }}
+        mv ${{ env.CACHE_PATH }}-new ${{ env.CACHE_PATH }}
+    
