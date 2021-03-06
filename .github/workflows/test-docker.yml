@@ -78,6 +78,10 @@ jobs:
         push: true
         tags: ${{ env.IMAGE_NAME }}
     - 
+      name: display images
+      run: |
+        docker images
+    - 
       name: Stop Docker registry
       run: docker stop registry
     -
