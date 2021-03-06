@@ -35,14 +35,27 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-buildx-
     - 
-      name: Build and export
+      name: Build and export build stage
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./docker/Dockerfile
+        target: builder
+        cache-from: type=local,src=${{ env.CACHE_PATH }}-builder
+        cache-to: type=local,dest=${{ env.CACHE_PATH }}-builder-new
+        push: true
+        tags: localhost:5000/psycho/pliers-builder:ci
+    - 
+      name: Build and export executable
       uses: docker/build-push-action@v2
       with:
         context: .
         file: ./docker/Dockerfile
         target: executable
-        cache-from: type=local,src=${{ env.CACHE_PATH }}
-        cache-to: type=local,dest=${{ env.CACHE_PATH }}-new
+        cache-from: |
+          type=local,src=${{ env.CACHE_PATH }}-exec
+          type=local,dest=${{ env.CACHE_PATH }}-builder-new
+        cache-to: type=local,dest=${{ env.CACHE_PATH }}-exec-new
         push: true
         tags: ${{ env.IMAGE_NAME }}
     - 
@@ -60,8 +73,10 @@ jobs:
       # https://github.com/moby/buildkit/issues/1896
       name: Move cache
       run: |
-        rm -rf /tmp/.buildx-cache
-        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+        rm -rf /tmp/.buildx-cache-exec
+        rm -rf /tmp/.buildx-cache-builder
+        mv /tmp/.buildx-cache-exec-new /tmp/.buildx-cache-exec
+        mv /tmp/.buildx-cache-builder-new /tmp/.buildx-cache-builder
 
   doctest:
     runs-on: ubuntu-latest
@@ -108,6 +123,7 @@ jobs:
         cache-from: |
           type=local,src=${{ env.CACHE_PATH }}
           ${{ env.IMAGE_NAME }}
+          localhost:5000/psycho/pliers-builder:ci
         cache-to: type=local,dest=${{ env.CACHE_PATH }}-new
     - 
       name: run doctests
