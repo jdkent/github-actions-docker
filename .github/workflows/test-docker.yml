@@ -138,7 +138,7 @@ jobs:
         docker images
     -
       name: run doctests
-      run: docker run localhost:5000/pliers-doctest:dev
+      run: docker run localhost:5000/pliers-doctest:ci
     - 
       name: Stop Docker registry
       run: docker stop registry
