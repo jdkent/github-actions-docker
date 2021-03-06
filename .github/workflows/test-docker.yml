@@ -96,9 +96,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: docker-registry-data
-        path: |
-          /tmp/registry
-          /tmp/.buildx-cache
+        path: /tmp/registry
     -
       # Temp fix
       # https://github.com/docker/build-push-action/issues/252
@@ -120,7 +118,7 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: docker-registry-data
-        path: /tmp
+        path: /tmp/registry
     - 
       name: Start Docker registry
       run: |
