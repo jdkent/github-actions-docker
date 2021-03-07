@@ -72,9 +72,6 @@ jobs:
         cache-to: type=local,dest=${{ env.CACHE_PATH }}-new
         push: true
         tags: ${{ env.IMAGE_NAME }}
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
-      timeout-minutes: 30
     - 
       name: Build and export doctest
       uses: docker/build-push-action@v2
@@ -135,10 +132,28 @@ jobs:
       name: Import Docker images
       run: |
         docker pull localhost:5000/pliers-doctest:ci
+        docker pull localhost:5000/pliers-builder:ci
+        docker pull localhost:5000/pliers:ci
     - 
       name: display images
       run: |
         docker images
+    - 
+      name: Build and export
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./docker/Dockerfile
+        tags: localhost:5000/pliers-doctest:dev
+        target: doctest
+        load: true
+        cache-from: |
+          localhost:5000/pliers-builder:ci
+          localhost:5000/pliers:ci
+    - 
+      name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      timeout-minutes: 30
     -
       name: run doctests
       run: docker run localhost:5000/pliers-doctest:ci
