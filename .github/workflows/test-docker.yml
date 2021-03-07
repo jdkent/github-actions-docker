@@ -52,8 +52,8 @@ jobs:
             docker push localhost:5000/python:3.7-slim
         fi
         set +e
-        docker pull ${BUILDER_IMG}
-        docker pull ${EXEC_IMG}
+        docker pull ${BUILDER_IMG} || true
+        docker pull ${EXEC_IMG} || true
     - 
       name: Build and export builder
       uses: docker/build-push-action@v2
