@@ -37,18 +37,21 @@ jobs:
       name: Rename builder image
       run: |
         set +e
-            docker pull localhost:5000/python:3.7-slim
-            success=$?
-            set -e
-            if [[ "$success" = "0" ]]; then
-                echo "Pulling from local registry"
-                docker tag localhost:5000/python:3.7-slim python:3.7-slim
-            else
-                echo "Pulling from Docker Hub"
-                docker pull python:3.7-slim
-                docker tag python:3.7-slim localhost:5000/python:3.7-slim
-                docker push localhost:5000/python:3.7-slim
-            fi
+        docker pull localhost:5000/python:3.7-slim
+        success=$?
+        set -e
+        if [[ "$success" = "0" ]]; then
+            echo "Pulling from local registry"
+            docker tag localhost:5000/python:3.7-slim python:3.7-slim
+        else
+            echo "Pulling from Docker Hub"
+            docker pull python:3.7-slim
+            docker tag python:3.7-slim localhost:5000/python:3.7-slim
+            docker push localhost:5000/python:3.7-slim
+        fi
+        set -e
+        docker pull localhost:5000/pliers-builder:ci
+        docker pull localhost:5000/pliers:ci
     - 
       name: Build and export build stage
       uses: docker/build-push-action@v2
@@ -58,8 +61,8 @@ jobs:
         target: builder
         build-args: |
           BUILDKIT_INLINE_CACHE=1
-        cache-from: type=local,src=${{ env.CACHE_PATH }}
-        cache-to: type=local,dest=${{ env.CACHE_PATH }}-new
+        cache-from: |
+          localhost:5000/pliers-builder:ci
         push: true
         tags: localhost:5000/pliers-builder:ci
     - 
@@ -72,8 +75,7 @@ jobs:
         build-args: |
           BUILDKIT_INLINE_CACHE=1
         cache-from: |
-          type=local,src=${{ env.CACHE_PATH }}
-        cache-to: type=local,dest=${{ env.CACHE_PATH }}-new
+          ${{ env.IMAGE_NAME }}
         push: true
         tags: ${{ env.IMAGE_NAME }}
     - 
