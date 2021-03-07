@@ -72,6 +72,9 @@ jobs:
         cache-to: type=local,dest=${{ env.CACHE_PATH }}-new
         push: true
         tags: ${{ env.IMAGE_NAME }}
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      timeout-minutes: 30
     - 
       name: Build and export doctest
       uses: docker/build-push-action@v2
