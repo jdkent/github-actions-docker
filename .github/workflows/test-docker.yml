@@ -64,7 +64,7 @@ jobs:
         cache-from: |
           type=registry,ref=${{ env.BUILDER_IMG }}
         cache-to: |
-          type=registry,${{ env.BUILDER_IMG }},mode=max
+          type=registry,ref=${{ env.BUILDER_IMG }},mode=max
         push: true
         tags: ${{ env.BUILDER_IMG }}
     - 
@@ -77,7 +77,7 @@ jobs:
         cache-from: |
           type=registry,ref=${{ env.EXEC_IMG }}
         cache-to: |
-          type=registry,${{ env.EXEC_IMG }},mode=max
+          type=registry,ref=${{ env.EXEC_IMG }},mode=max
         push: true
         tags: ${{ env.EXEC_IMG }}
     - 
