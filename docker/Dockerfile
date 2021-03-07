@@ -20,5 +20,5 @@ ENV PATH="/opt/venv/bin:$PATH"
 USER pliers
 WORKDIR /work
 
-FROM executable as doctest
+FROM executable as docs
 CMD echo "yes"
