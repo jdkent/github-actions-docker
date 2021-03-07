@@ -56,6 +56,8 @@ jobs:
         context: .
         file: ./docker/Dockerfile
         target: builder
+        build-args: |
+          BUILDKIT_INLINE_CACHE=1
         cache-from: type=local,src=${{ env.CACHE_PATH }}
         cache-to: type=local,dest=${{ env.CACHE_PATH }}-new
         push: true
@@ -67,6 +69,8 @@ jobs:
         context: .
         file: ./docker/Dockerfile
         target: executable
+        build-args: |
+          BUILDKIT_INLINE_CACHE=1
         cache-from: |
           type=local,src=${{ env.CACHE_PATH }}
         cache-to: type=local,dest=${{ env.CACHE_PATH }}-new
