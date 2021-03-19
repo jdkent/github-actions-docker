@@ -5,9 +5,9 @@ on: [pull_request,workflow_dispatch,push]
 
 env:
   UNSTABLE_IMG: ghcr.io/jdkent/pliers:unstable
-  EXEC_IMG: ghcr.io/jdkent/pliers:exec-${{ GITHUB_REF##*/ }}
-  BUILDER_IMG: ghcr.io/jdkent/pliers:build-${{ GITHUB_REF##*/ }}
-  DOC_IMG: ghcr.io/jdkent/pliers:docs-${{ GITHUB_REF##*/ }}
+  EXEC_IMG: ghcr.io/jdkent/pliers:exec-${{ GITHUB_REF }}
+  BUILDER_IMG: ghcr.io/jdkent/pliers:build-${{ GITHUB_REF }}
+  DOC_IMG: ghcr.io/jdkent/pliers:docs-${{ GITHUB_REF }}
   REGISTRY_PATH: /tmp/registry
   CACHE_PATH: /tmp/.buildx-cache
   
