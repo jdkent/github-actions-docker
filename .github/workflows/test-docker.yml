@@ -5,9 +5,9 @@ on: [pull_request,workflow_dispatch,push]
 
 env:
   UNSTABLE_IMG: ghcr.io/jdkent/pliers:unstable
-  EXEC_IMG: ghcr.io/jdkent/pliers:exec-${{ GITHUB_REF }}
-  BUILDER_IMG: ghcr.io/jdkent/pliers:build-${{ GITHUB_REF }}
-  DOC_IMG: ghcr.io/jdkent/pliers:docs-${{ GITHUB_REF }}
+  EXEC_IMG: ghcr.io/jdkent/pliers:exec
+  BUILDER_IMG: ghcr.io/jdkent/pliers:build
+  DOC_IMG: ghcr.io/jdkent/pliers:docs
   REGISTRY_PATH: /tmp/registry
   CACHE_PATH: /tmp/.buildx-cache
   
@@ -30,12 +30,12 @@ jobs:
         file: ./docker/Dockerfile
         target: builder
         cache-from: |
-          type=registry,ref=${{ env.BUILDER_IMG }}
+          type=registry,ref=${{ env.BUILDER_IMG }}-${GITHUB_REF##*/}
           type=registry,ref=${{ env.UNSTABLE_IMG }}
         cache-to: |
-          type=registry,ref=${{ env.BUILDER_IMG }},mode=max
+          type=registry,ref=${{ env.BUILDER_IMG }}-${GITHUB_REF##*/},mode=max
         push: true
-        tags: ${{ env.BUILDER_IMG }}
+        tags: ${{ env.BUILDER_IMG }}-${GITHUB_REF##*/}
     - 
       name: Build and export executable
       uses: docker/build-push-action@v2
@@ -44,11 +44,11 @@ jobs:
         file: ./docker/Dockerfile
         target: executable
         cache-from: |
-          type=registry,ref=${{ env.EXEC_IMG }}
+          type=registry,ref=${{ env.EXEC_IMG }}-${GITHUB_REF##*/}
         cache-to: |
-          type=registry,ref=${{ env.EXEC_IMG }},mode=max
+          type=registry,ref=${{ env.EXEC_IMG }}-${GITHUB_REF##*/},mode=max
         push: true
-        tags: ${{ env.EXEC_IMG }}
+        tags: ${{ env.EXEC_IMG }}-${GITHUB_REF##*/}
     - 
       name: Stop Docker registry
       run: docker stop registry
@@ -82,18 +82,19 @@ jobs:
         tags: ${{ env.DOC_IMG }}
         target: docs
         push: true
+        tags: ${{ env.DOC_IMG }}-${GITHUB_REF##*/}
         cache-from: |
-          type=registry,ref=${{ env.BUILDER_IMG }}
-          type=registry,ref=${{ env.EXEC_IMG }}
-          type=registry,ref=${{ env.DOC_IMG }}
+          type=registry,ref=${{ env.BUILDER_IMG }}-${GITHUB_REF##*/}
+          type=registry,ref=${{ env.EXEC_IMG }}-${GITHUB_REF##*/}
+          type=registry,ref=${{ env.DOC_IMG }}-${GITHUB_REF##*/}
           type=registry,ref=${{ env.UNSTABLE_IMG }}
         cache-to: |
-          type=registry,ref=${{ env.DOC_IMG }}
+          type=registry,ref=${{ env.DOC_IMG }}-${GITHUB_REF##*/}
     # - 
     #   name: Setup tmate session
     #   uses: mxschmitt/action-tmate@v3
     #   timeout-minutes: 30
     -
       name: run doc tests
-      run: docker run ${DOC_IMG}
+      run: docker run ${DOC_IMG}-${GITHUB_REF##*/}
     
