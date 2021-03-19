@@ -56,7 +56,7 @@ jobs:
         push: true
         tags: |
           - ${{ env.EXEC_IMG }}
-          - ${{ env.EXEC_IMG }}-${{ github.sha }}
+          - ${{ env.EXEC_IMG }}_${{ github.sha }}
 
   docs:
     runs-on: ubuntu-latest
@@ -125,11 +125,11 @@ jobs:
       -
         name: rename image to jdkent/pliers
         run: |
-          docker pull ${{ env.EXEC_IMG }}-${{ github.sha }}
-          docker tag ${{ env.EXEC_IMG }}-${{ github.sha }} jdkent/pliers:unstable
+          docker pull ${{ env.EXEC_IMG }}_${{ github.sha }}
+          docker tag ${{ env.EXEC_IMG }}_${{ github.sha }} jdkent/pliers:unstable
           docker push jdkent/pliers:unstable
           if ${GITHUB_REF##*/} != 'main':
-            docker tag ${{ env.EXEC_IMG }}-${{ github.sha }} jdkent/pliers:${GITHUB_REF##*/}
+            docker tag ${{ env.EXEC_IMG }}_${{ github.sha }} jdkent/pliers:${GITHUB_REF##*/}
             docker push jdkent/pliers:${GITHUB_REF##*/}
   clean:
     if: always()
