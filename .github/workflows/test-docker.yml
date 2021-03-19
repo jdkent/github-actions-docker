@@ -79,7 +79,6 @@ jobs:
       with:
         context: .
         file: ./docker/Dockerfile
-        tags: ${{ env.DOC_IMG }}
         target: docs
         push: true
         tags: ${{ env.DOC_IMG }}-${GITHUB_REF##*/}
