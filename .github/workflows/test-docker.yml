@@ -85,7 +85,7 @@ jobs:
         context: .
         file: ./docker/Dockerfile
         target: docs
-        push: true
+        load: true
         tags: ${{ env.DOC_IMG }}
         cache-from: |
           type=registry,ref=${{ env.BUILDER_IMG }}
@@ -101,4 +101,7 @@ jobs:
     -
       name: run doc tests
       run: docker run ${DOC_IMG}
+    - 
+      name: push docs image
+      run: docker push ${DOC_IMG}
     
