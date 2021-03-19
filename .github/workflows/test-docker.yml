@@ -30,12 +30,12 @@ jobs:
         file: ./docker/Dockerfile
         target: builder
         cache-from: |
-          type=registry,ref=${{ env.BUILDER_IMG }}-${GITHUB_REF##*/}
+          type=registry,ref=${{ env.BUILDER_IMG }}
           type=registry,ref=${{ env.UNSTABLE_IMG }}
         cache-to: |
-          type=registry,ref=${{ env.BUILDER_IMG }}-${GITHUB_REF##*/},mode=max
+          type=registry,ref=${{ env.BUILDER_IMG }},mode=max
         push: true
-        tags: ${{ env.BUILDER_IMG }}-${GITHUB_REF##*/}
+        tags: ${{ env.BUILDER_IMG }}
     - 
       name: Build and export executable
       uses: docker/build-push-action@v2
@@ -44,11 +44,11 @@ jobs:
         file: ./docker/Dockerfile
         target: executable
         cache-from: |
-          type=registry,ref=${{ env.EXEC_IMG }}-${GITHUB_REF##*/}
+          type=registry,ref=${{ env.EXEC_IMG }}
         cache-to: |
-          type=registry,ref=${{ env.EXEC_IMG }}-${GITHUB_REF##*/},mode=max
+          type=registry,ref=${{ env.EXEC_IMG }},mode=max
         push: true
-        tags: ${{ env.EXEC_IMG }}-${GITHUB_REF##*/}
+        tags: ${{ env.EXEC_IMG }}
     - 
       name: Stop Docker registry
       run: docker stop registry
@@ -81,19 +81,19 @@ jobs:
         file: ./docker/Dockerfile
         target: docs
         push: true
-        tags: ${{ env.DOC_IMG }}-${GITHUB_REF##*/}
+        tags: ${{ env.DOC_IMG }}
         cache-from: |
-          type=registry,ref=${{ env.BUILDER_IMG }}-${GITHUB_REF##*/}
-          type=registry,ref=${{ env.EXEC_IMG }}-${GITHUB_REF##*/}
-          type=registry,ref=${{ env.DOC_IMG }}-${GITHUB_REF##*/}
+          type=registry,ref=${{ env.BUILDER_IMG }}
+          type=registry,ref=${{ env.EXEC_IMG }}
+          type=registry,ref=${{ env.DOC_IMG }}
           type=registry,ref=${{ env.UNSTABLE_IMG }}
         cache-to: |
-          type=registry,ref=${{ env.DOC_IMG }}-${GITHUB_REF##*/}
+          type=registry,ref=${{ env.DOC_IMG }}
     # - 
     #   name: Setup tmate session
     #   uses: mxschmitt/action-tmate@v3
     #   timeout-minutes: 30
     -
       name: run doc tests
-      run: docker run ${DOC_IMG}-${GITHUB_REF##*/}
+      run: docker run ${DOC_IMG}
     
