@@ -26,6 +26,7 @@ src/
 .gitignore
 .git/**/*
 .git
+.github
 
 # other
 work/**/*
