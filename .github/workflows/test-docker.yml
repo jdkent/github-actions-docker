@@ -5,10 +5,10 @@ on: [pull_request,workflow_dispatch,push]
 
 env:
   UNSTABLE_IMG: jdkent/pliers:unstable
-  EXEC_IMG: ghcr.io/jdkent/ci:ci-exec
-  BUILDER_IMG: ghcr.io/jdkent/ci:ci-build
-  DOC_IMG: ghcr.io/jdkent/ci:ci-docs
-  TEST_IMG: ghcr.io/jdkent/ci:ci-test
+  EXEC_IMG: ghcr.io/jdkent/ci:ci_exec
+  BUILDER_IMG: ghcr.io/jdkent/ci:ci_build
+  DOC_IMG: ghcr.io/jdkent/ci:ci_docs
+  TEST_IMG: ghcr.io/jdkent/ci:ci_test
   
 
 jobs:
