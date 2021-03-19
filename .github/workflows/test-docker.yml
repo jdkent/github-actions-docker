@@ -4,7 +4,7 @@ name: Pull Request Docker Check
 on: [pull_request,workflow_dispatch,push]
 
 env:
-  UNSTABLE_IMG: jdkent/pliers:unstable
+  UNSTABLE_IMG: ghcr.io/jdkent/pliers:unstable
   EXEC_IMG: ghcr.io/jdkent/ci:ci_exec
   BUILDER_IMG: ghcr.io/jdkent/ci:ci_build
   DOC_IMG: ghcr.io/jdkent/ci:ci_docs
@@ -126,11 +126,11 @@ jobs:
         name: rename image to jdkent/pliers
         run: |
           docker pull ${{ env.EXEC_IMG }}_${{ github.sha }}
-          docker tag ${{ env.EXEC_IMG }}_${{ github.sha }} jdkent/pliers:unstable
+          docker tag ${{ env.EXEC_IMG }}_${{ github.sha }} ${{ env.UNSTABLE_IMG }}
           docker push jdkent/pliers:unstable
           if ${GITHUB_REF##*/} != 'main':
             docker tag ${{ env.EXEC_IMG }}_${{ github.sha }} jdkent/pliers:${GITHUB_REF##*/}
-            docker push jdkent/pliers:${GITHUB_REF##*/}
+            docker push ghcr.io/jdkent/pliers:${GITHUB_REF##*/}
   clean:
     if: always()
     runs-on: ubuntu-latest
@@ -150,4 +150,4 @@ jobs:
         uses: smartsquaregmbh/delete-old-packages@v0.2.0
         with:
           keep: 5
-          names: ci
+          names: jdkent/ci
