@@ -55,8 +55,8 @@ jobs:
           type=registry,ref=${{ env.EXEC_IMG }},mode=max
         push: true
         tags: |
-          - ${{ env.EXEC_IMG }}
-          - ${{ env.EXEC_IMG }}_${{ github.sha }}
+          ${{ env.EXEC_IMG }}
+          ${{ env.EXEC_IMG }}_${{ github.sha }}
 
   docs:
     runs-on: ubuntu-latest
