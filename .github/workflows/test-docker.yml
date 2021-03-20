@@ -128,7 +128,7 @@ jobs:
           docker pull ${{ env.EXEC_IMG }}_${{ github.sha }}
           docker tag ${{ env.EXEC_IMG }}_${{ github.sha }} ${{ env.UNSTABLE_IMG }}
           docker push ${{ env.UNSTABLE_IMG }}
-          if ${GITHUB_REF##*/} != 'main':
+          if ${GITHUB_REF##*/} != 'main'; then
             docker tag ${{ env.EXEC_IMG }}_${{ github.sha }} ghcr.io/jdkent/pliers:${GITHUB_REF##*/}
             docker push ghcr.io/jdkent/pliers:${GITHUB_REF##*/}
           fi
