@@ -26,3 +26,7 @@ WORKDIR /work
 FROM executable as docs
 LABEL org.opencontainers.image.source=https://github.com/jdkent/github-actions-docker
 CMD echo "yes"
+
+FROM executable as tests
+LABEL org.opencontainers.image.source=https://github.com/jdkent/github-actions-docker
+CMD echo "yes"
