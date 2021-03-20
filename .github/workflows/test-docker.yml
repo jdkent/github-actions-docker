@@ -110,7 +110,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build_image
-      - docs
+      - test
     steps:
       -
         name: Set up Docker Buildx
@@ -141,7 +141,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build_image
-      - docs
+      - test
     steps:
       -
         name: Login to GitHub Container Registry
