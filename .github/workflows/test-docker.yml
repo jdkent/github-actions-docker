@@ -131,6 +131,7 @@ jobs:
           if ${GITHUB_REF##*/} != 'main':
             docker tag ${{ env.EXEC_IMG }}_${{ github.sha }} ghcr.io/jdkent/pliers:${GITHUB_REF##*/}
             docker push ghcr.io/jdkent/pliers:${GITHUB_REF##*/}
+          fi
   clean:
     if: always()
     runs-on: ubuntu-latest
