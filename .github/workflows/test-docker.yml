@@ -123,6 +123,10 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
       -
+        name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        timeout-minutes: 30
+      -
         name: rename image to jdkent/pliers
         run: |
           docker pull ${{ env.EXEC_IMG }}_${{ github.sha }}
@@ -151,4 +155,4 @@ jobs:
         uses: smartsquaregmbh/delete-old-packages@v0.2.0
         with:
           keep: 5
-          names: jdkent/ci
+          names: github-actions-docker,ci
