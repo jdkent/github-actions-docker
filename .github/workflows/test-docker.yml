@@ -28,6 +28,8 @@ jobs:
         context: .
         file: ./docker/Dockerfile
         target: builder
+        build-args: |
+          BUILDKIT_INLINE_CACHE=1
         cache-from: |
           type=registry,ref=${{ env.BUILDER_IMG }}
         load: true
@@ -39,6 +41,8 @@ jobs:
         context: .
         file: ./docker/Dockerfile
         target: executable
+        build-args: |
+          BUILDKIT_INLINE_CACHE=1
         cache-from: |
           type=registry,ref=${{ env.UNSTABLE_IMG }}
         load: true
@@ -52,8 +56,10 @@ jobs:
         context: .
         file: ./docker/Dockerfile
         target: tests
+        build-args: |
+          BUILDKIT_INLINE_CACHE=1
         cache-from: |
-          type=docker,ref=${{ env.UNSTABLE_IMG }}
+          type=docker,ref=${{ env.EXEC_IMG }}
         load: true
         tags: |
           ${{ env.TEST_IMG }}
