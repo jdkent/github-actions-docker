@@ -3,18 +3,20 @@ name: Docker Workflow
 
 on: [pull_request,workflow_dispatch,push]
 
-env:
-  UNSTABLE_IMG: ghcr.io/${{ github.repository_owner }}/pliers:unstable
-  EXEC_IMG: ghcr.io/${{ github.repository_owner }}/ci:ci_exec
-  BUILDER_IMG: ghcr.io/${{ github.repository_owner }}/ci:ci_build
-  DOC_IMG: ghcr.io/${{ github.repository_owner }}/ci:ci_docs
-  TEST_IMG: ghcr.io/${{ github.repository_owner }}/ci:ci_test
-  
-
 jobs:
-  build_image:
+  docker_test_and_deploy:
     runs-on: ubuntu-latest
     steps:
+    - 
+      name: Set environment variables
+      run: |
+        repo_owner=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')
+        echo ::set-env name=UNSTABLE_IMG::ghcr.io/${repo_owner}/pliers:unstable
+        echo ::set-env name=EXEC_IMG::ghcr.io/${repo_owner}/pliersci:ci_exec
+        echo ::set-env name=BUILDER_IMG::ghcr.io/${repo_owner}/pliersci:ci_build
+        echo ::set-env name=DOC_IMG::ghcr.io/${repo_owner}/pliersci:ci_docs
+        echo ::set-env name=TEST_IMG::ghcr.io/${repo_owner}/pliersci:ci_docs
+
     - 
       name: Checkout
       uses: actions/checkout@v2
@@ -35,7 +37,7 @@ jobs:
         load: true
         tags: ${{ env.BUILDER_IMG }}
     - 
-      name: Build Executable Image
+      name: Build executable image
       uses: docker/build-push-action@v2
       with:
         context: .
@@ -50,7 +52,7 @@ jobs:
           ${{ env.EXEC_IMG }}
           ${{ env.UNSTABLE_IMG }}
     - 
-      name: Build Testing Image
+      name: Build testing image
       uses: docker/build-push-action@v2
       with:
         context: .
