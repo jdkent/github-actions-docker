@@ -1,5 +1,5 @@
 
-name: Pull Request Docker Check
+name: Docker Workflow
 
 on: [pull_request,workflow_dispatch,push]
 
@@ -28,6 +28,8 @@ jobs:
         context: .
         file: ./docker/Dockerfile
         target: builder
+        cache-from: |
+          type=registry,ref=${{ env.BUILDER_IMG }}
         load: true
         tags: ${{ env.BUILDER_IMG }}
     - 
@@ -65,7 +67,8 @@ jobs:
       run: |
         if [ "${GITHUB_EVENT_NAME}" == "push" ] && [ ! -z "${CR_PAT}" ]; then
           echo "${CR_PAT}" | docker login ghcr.io -u USERNAME --password-stdin 
-          docker push ${UNSTABLE_IMG}
+          docker push ${UNSTABLE_IMG}  # push image for users
+          docker push ${BUILDER_IMG}  # push image for build cache 
           # check if this is a release
           ref_name=${GITHUB_REF##*/}
           if [[ "${ref_name}" == v* ]]; then
