@@ -11,12 +11,11 @@ jobs:
       name: Set environment variables
       run: |
         repo_owner=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')
-        echo ::set-env name=UNSTABLE_IMG::ghcr.io/${repo_owner}/pliers:unstable
-        echo ::set-env name=EXEC_IMG::ghcr.io/${repo_owner}/pliersci:ci_exec
-        echo ::set-env name=BUILDER_IMG::ghcr.io/${repo_owner}/pliersci:ci_build
-        echo ::set-env name=DOC_IMG::ghcr.io/${repo_owner}/pliersci:ci_docs
-        echo ::set-env name=TEST_IMG::ghcr.io/${repo_owner}/pliersci:ci_docs
-
+        echo UNSTABLE_IMG=ghcr.io/${repo_owner}/pliers:unstable >> $GITHUB_ENV
+        echo EXEC_IMG=ghcr.io/${repo_owner}/pliersci:ci_exec >> $GITHUB_ENV
+        echo BUILDER_IMG=ghcr.io/${repo_owner}/pliersci:ci_build >> $GITHUB_ENV
+        echo DOC_IMG=ghcr.io/${repo_owner}/pliersci:ci_docs >> $GITHUB_ENV
+        echo TEST_IMG=ghcr.io/${repo_owner}/pliersci:ci_docs >> $GITHUB_ENV
     - 
       name: Checkout
       uses: actions/checkout@v2
